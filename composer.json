@@ -1,0 +1,29 @@
+{
+    "name": "jasminecms/seo",
+    "description": "SEO package for Jasmine",
+    "license": "MIT",
+    "authors": [
+        {
+            "name": "Mordi Sacks"
+        }
+    ],
+    "require": {
+        "jasminecms/jasmine": "^1.0|dev-master",
+        "artesaos/seotools": "^0.20.1"
+    },
+    "autoload": {
+        "psr-4": {
+            "Jasmine\\Seo\\": "src/"
+        }
+    },
+    "extra": {
+        "laravel": {
+            "providers": [
+                "Jasmine\\Seo\\JasmineSeoServiceProvider"
+            ],
+            "aliases": {
+                "JasmineSeo": "Jasmine\\Seo\\Facades\\JasmineSeo"
+            }
+        }
+    }
+}
