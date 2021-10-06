@@ -18,13 +18,11 @@ class JasmineSeo
             __('SEO Properties') => [
                 (new InputField('seo_title'))
                     ->setLabel(__('Title'))
-                    ->setOptions(['maxlength' => 60])
-                    ->setValidation(['nullable', 'string', 'max:60']),
+                    ->setValidation(['nullable', 'string']),
 
                 (new TextareaField('seo_description'))
                     ->setLabel(__('Description'))
-                    ->setOptions(['maxlength' => 160])
-                    ->setValidation(['nullable', 'string', 'max:160']),
+                    ->setValidation(['nullable', 'string']),
 
                 (new InputField('seo_canonical'))
                     ->setLabel(__('Canonical URL'))
