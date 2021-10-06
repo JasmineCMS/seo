@@ -25,7 +25,7 @@ In your fieldsManifest add
     }
 ``` 
 
-In before you return your page call
+Before you return your view call
 `JasmineSeo::build($seoableModel);`
 
 In your blade in the head section call
