@@ -43,9 +43,9 @@ class JasmineSeo
     {
         if (!method_exists($model, 'isSeoable')) return;
 
-        if ($model->seo->title) SEOTools::setTitle($model->seo->title);
-        if ($model->seo->description) SEOTools::setDescription($model->seo->description);
-        if ($model->seo->canonical) SEOTools::setCanonical($model->seo->canonical);
-        if ($model->seo->image) SEOTools::addImages($model->seo->image->src);
+        if ($model->seo?->title) SEOTools::setTitle($model->seo->title);
+        if ($model->seo?->description) SEOTools::setDescription($model->seo->description);
+        if ($model->seo?->canonical) SEOTools::setCanonical($model->seo->canonical);
+        if ($model->seo?->image) SEOTools::addImages($model->seo->image->src);
     }
 }
