@@ -43,7 +43,17 @@ class JasmineSeo
     {
         if (!method_exists($model, 'isSeoable')) return;
 
-        if ($model->seo?->title) SEOTools::setTitle($model->seo->title);
+        if ($model->seo?->title) {
+            $defaultT = config('seotools.json-ld.defaults.title');
+            $sep = config('seotools.meta.defaults.separator', ' | ');
+            $before = config('seotools.meta.defaults.titleBefore', false);
+
+            \SEOMeta::setTitle($model->seo->title);
+            \OpenGraph::setTitle($before ? $defaultT . $model->seo->title : $model->seo->title . $sep . $defaultT);
+            \Twitter::setTitle($before ? $defaultT . $model->seo->title : $model->seo->title . $sep . $defaultT);
+            \JsonLd::setTitle($before ? $defaultT . $model->seo->title : $model->seo->title . $sep . $defaultT);
+        }
+
         if ($model->seo?->description) SEOTools::setDescription($model->seo->description);
         if ($model->seo?->canonical) SEOTools::setCanonical($model->seo->canonical);
         if ($model->seo?->image) SEOTools::addImages($model->seo->image->src);
