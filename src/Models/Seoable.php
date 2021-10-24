@@ -51,6 +51,8 @@ trait Seoable
         static::retrieved(function (Model $model) {
             if (!Route::is('jasmine.*')) return;
             /** @var Model|Seoable $model */
+            if (method_exists($model, 'getLocale')) $model->seo->setLocale($model->getLocale());
+
             $bag = [
                 'seo_title'       => $model->seo?->title,
                 'seo_description' => $model->seo?->description,
