@@ -25,7 +25,9 @@ trait Seoable
             unset($bag['seo_image']);
 
             if ($model instanceof JasminePage) $model->content = $bag;
+        });
 
+        static::saved(function (Model $model){
             // validated previously by bread controller
             $data = [
                 'title'       => request('seo_title'),
