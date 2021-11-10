@@ -27,7 +27,7 @@ trait Seoable
             if ($model instanceof JasminePage) $model->content = $bag;
         });
 
-        static::saved(function (Model $model){
+        static::saved(function (Model $model) {
             // validated previously by bread controller
             $data = [
                 'title'       => request('seo_title'),
@@ -53,9 +53,7 @@ trait Seoable
         static::retrieved(function (Model $model) {
             if (!Route::is('jasmine.*')) return;
             /** @var Model|Seoable $model */
-
-            $locale = \request()->get('_locale', app()->getLocale());
-            if ($model->seo) $model->seo->setLocale($locale);
+            if (method_exists($model, 'getLocale')) $model->seo->setLocale($model->getLocale());
 
             $bag = [
                 'seo_title'       => $model->seo?->title,
