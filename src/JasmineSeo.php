@@ -29,7 +29,8 @@ class JasmineSeo
                     ->setValidation(['nullable', 'string', 'url']),
 
                 (new ImageField('seo_image'))
-                    ->setLabel(__('Image')),
+                    ->setLabel(__('Image'))
+                    ->setOptions(['w' => 269, 'h' => 319]),
             ],
         ];
     }
