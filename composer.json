@@ -9,7 +9,7 @@
     ],
     "require": {
         "jasminecms/jasmine": "^1.0",
-        "artesaos/seotools": "^0.20"
+        "artesaos/seotools": "0.*"
     },
     "autoload": {
         "psr-4": {
