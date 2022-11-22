@@ -1,29 +1,31 @@
 {
-    "name": "jasminecms/seo",
-    "description": "SEO package for Jasmine",
-    "license": "MIT",
-    "authors": [
-        {
-            "name": "Mordi Sacks"
-        }
-    ],
-    "require": {
-        "jasminecms/jasmine": "^1.0",
-        "artesaos/seotools": "0.*"
-    },
-    "autoload": {
-        "psr-4": {
-            "Jasmine\\Seo\\": "src/"
-        }
-    },
-    "extra": {
-        "laravel": {
-            "providers": [
-                "Jasmine\\Seo\\JasmineSeoServiceProvider"
-            ],
-            "aliases": {
-                "JasmineSeo": "Jasmine\\Seo\\Facades\\JasmineSeo"
-            }
-        }
+  "name": "jasminecms/seo",
+  "description": "SEO package for Jasmine",
+  "license": "MIT",
+  "authors": [
+    {
+      "name": "Mordi Sacks"
     }
+  ],
+  "require": {
+    "jasminecms/jasmine": "^2.0",
+    "artesaos/seotools": "^1.0"
+  },
+  "autoload": {
+    "psr-4": {
+      "Jasmine\\Seo\\": "src/"
+    }
+  },
+  "extra": {
+    "laravel": {
+      "providers": [
+        "Jasmine\\Seo\\JasmineSeoServiceProvider"
+      ],
+      "aliases": {
+        "JasmineSeo": "Jasmine\\Seo\\Facades\\JasmineSeo"
+      }
+    }
+  },
+  "minimum-stability": "dev",
+  "prefer-stable": true
 }
