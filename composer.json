@@ -8,7 +8,7 @@
     }
   ],
   "require": {
-    "jasminecms/jasmine": "^2.0",
+    "jasminecms/jasmine": "^2.2",
     "artesaos/seotools": "^1.0"
   },
   "autoload": {

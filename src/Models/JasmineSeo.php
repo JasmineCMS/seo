@@ -3,20 +3,21 @@
 namespace Jasmine\Seo\Models;
 
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Support\Carbon;
 use Jasmine\Jasmine\Bread\Translatable;
 
 /**
  * Jasmine\Seo\Models\JasmineSeo
  *
- * @property int                             $id
- * @property string                          $seoable_type
- * @property int                             $seoable_id
- * @property string|null                     $title
- * @property string|null                     $description
- * @property string|null                     $canonical
- * @property string|null                     $image
- * @property \Illuminate\Support\Carbon|null $created_at
- * @property \Illuminate\Support\Carbon|null $updated_at
+ * @property int         $id
+ * @property string      $seoable_type
+ * @property int         $seoable_id
+ * @property string|null $title
+ * @property string|null $description
+ * @property string|null $canonical
+ * @property string|null $image
+ * @property Carbon|null $created_at
+ * @property Carbon|null $updated_at
  * @mixin \Eloquent
  */
 class JasmineSeo extends Model
@@ -32,18 +33,9 @@ class JasmineSeo extends Model
         'image',
     ];
 
-    public $translatable = [
-        'title',
-        'description',
-        'canonical',
-    ];
+    public $translatable = ['title', 'description', 'canonical'];
 
-    protected $casts = [
-        'image' => 'object',
-    ];
+    protected $casts = ['image' => 'object'];
 
-    public function seoable()
-    {
-        return $this->morphTo();
-    }
+    public function seoable() { return $this->morphTo(); }
 }

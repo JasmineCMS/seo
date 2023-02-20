@@ -4,6 +4,7 @@ namespace Jasmine\Seo\Models;
 
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\Facades\Route;
+use Jasmine\Jasmine\Bread\BreadableInterface;
 use Jasmine\Jasmine\Bread\Translatable;
 use Jasmine\Jasmine\Models\JasminePage;
 
@@ -13,68 +14,54 @@ use Jasmine\Jasmine\Models\JasminePage;
 trait Seoable
 {
     public function isSeoable() { return true; }
-    
-    public static function bootSeoable()
+
+    public static function seoableJasmineOnSaving(Model|BreadableInterface $m, array $data)
     {
-        static::saving(function (Model $model) {
-            $bag = $model instanceof JasminePage ? $model->content : $model;
-            
-            unset($bag['seo_title']);
-            unset($bag['seo_description']);
-            unset($bag['seo_canonical']);
-            unset($bag['seo_image']);
-            
-            if ($model instanceof JasminePage) $model->content = $bag;
-        });
-        
-        static::saved(function (Model $model) {
-            // validated previously by bread controller
-            $data = [
-                'title'       => request('v.seo_title', request('seo_title')),
-                'description' => request('v.seo_description', request('seo_description')),
-                'canonical'   => request('v.seo_canonical', request('seo_canonical')),
-                'image'       => request('v.seo_image', request('seo_image')),
-            ];
-            
-            /** @var JasmineSeo $seo */
-            $seo = JasmineSeo::firstOrNew([
-                'seoable_type' => $model::class,
-                'seoable_id'   => $model->getKey(),
-            ]);
-            
-            $locale = app()->getLocale();
-            if (method_exists($model, 'getLocale')) $locale = \request()->get('_locale', app()->getLocale());
-            
-            $seo->setLocale($locale);
-            $seo->fill($data);
-            $seo->save();
-        });
-        
-        static::retrieved(function (Model $model) {
-            if (!Route::is('jasmine.*')) return;
-            /** @var Model|Seoable $model */
-            //if (method_exists($model, 'getLocale') && $model->seo) $model->seo->setLocale($model->getLocale());
-            if (method_exists($model, 'getLocale') && $model->seo) $model->seo->setLocale(request('_locale', app()->getLocale()));
-            
-            $bag = [
-                'seo_title'       => $model->seo?->title,
-                'seo_description' => $model->seo?->description,
-                'seo_canonical'   => $model->seo?->canonical,
-                'seo_image'       => $model->seo?->image,
-            ];
-            
-            if ($model instanceof JasminePage) {
-                $content = $model->content;
-                foreach ($bag as $k => $v) $content[$k] = $v;
-                $model->content = $content;
-            } else {
-                foreach ($bag as $k => $v) $model->setAttribute($k, $v);
-            }
-        });
+        $bag = $m instanceof JasminePage ? $m->content : $data;
+
+        /** @var JasmineSeo $seo */
+        $seo = JasmineSeo::firstOrNew([
+            'seoable_type' => $m::class,
+            'seoable_id'   => $m->getKey(),
+        ]);
+
+        $locale = app()->getLocale();
+        if (method_exists($m, 'getLocale')) $locale = \request()->get('_locale', app()->getLocale());
+
+        $seo->setLocale($locale)->fill([
+            'title'       => $bag['seo_title'] ?? null,
+            'description' => $bag['seo_description'] ?? null,
+            'canonical'   => $bag['seo_canonical'] ?? null,
+            'image'       => $bag['seo_image'] ?? new \stdClass(),
+        ])->save();
+
+        unset(
+            $m['seo_title'],
+            $m['seo_description'],
+            $m['seo_canonical'],
+            $m['seo_image'],
+        );
     }
-    
-    public function seo()
+
+    public static function seoableJasmineOnRetrievedForEdit(Model|BreadableInterface $m)
     {
-        return $this->morphOne(JasmineSeo::class, 'seoable');
+        $m->load('seo');
+
+        if (method_exists($m, 'getLocale') && $m->seo) $m->seo->setLocale(request('_locale', app()->getLocale()));
+
+        $data = [
+            'seo_title'       => $m->seo?->title,
+            'seo_description' => $m->seo?->description,
+            'seo_canonical'   => $m->seo?->canonical,
+            'seo_image'       => $m->seo?->image,
+        ];
+
+        if ($m instanceof JasminePage) {
+            $content = $m->content;
+            foreach ($data as $k => $v) $content[$k] = $v;
+            $m->content = $content;
+        } else foreach ($data as $k => $v) $m->setAttribute($k, $v);
     }
+
+    public function seo() { return $this->morphOne(JasmineSeo::class, 'seoable'); }
 }
