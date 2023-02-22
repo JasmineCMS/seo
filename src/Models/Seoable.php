@@ -15,7 +15,7 @@ trait Seoable
 {
     public function isSeoable() { return true; }
 
-    public static function seoableJasmineOnSaving(Model|BreadableInterface $m, array $data)
+    public static function seoableJasmineOnSaved(Model|BreadableInterface $m, array $data)
     {
         $bag = $m instanceof JasminePage ? $m->content : $data;
 
