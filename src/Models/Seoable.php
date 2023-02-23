@@ -15,9 +15,28 @@ trait Seoable
 {
     public function isSeoable() { return true; }
 
-    public static function seoableJasmineOnSaved(Model|BreadableInterface $m, array $data)
+    public static function seoableJasmineOnSaving(Model|BreadableInterface $m, array $data)
     {
-        $bag = $m instanceof JasminePage ? $m->content : $data;
+        $bag = collect($m instanceof JasminePage ? $m->content : $data)->only([
+            'seo_title',
+            'seo_description',
+            'seo_canonical',
+            'seo_image',
+        ])->toArray();
+
+        session([$m::class . ':seo' => $bag]);
+
+        unset(
+            $m['seo_title'],
+            $m['seo_description'],
+            $m['seo_canonical'],
+            $m['seo_image'],
+        );
+    }
+
+    public static function seoableJasmineOnSaved(Model|BreadableInterface $m)
+    {
+        $bag = session($m::class . ':seo', []);
 
         /** @var JasmineSeo $seo */
         $seo = JasmineSeo::firstOrNew([
@@ -34,13 +53,6 @@ trait Seoable
             'canonical'   => $bag['seo_canonical'] ?? null,
             'image'       => $bag['seo_image'] ?? new \stdClass(),
         ])->save();
-
-        unset(
-            $m['seo_title'],
-            $m['seo_description'],
-            $m['seo_canonical'],
-            $m['seo_image'],
-        );
     }
 
     public static function seoableJasmineOnRetrievedForEdit(Model|BreadableInterface $m)
