@@ -57,6 +57,6 @@ class JasmineSeo
 
         if ($model->seo?->description) SEOTools::setDescription($model->seo->description);
         if ($model->seo?->canonical) SEOTools::setCanonical($model->seo->canonical);
-        if ($model->seo?->image) SEOTools::addImages($model->seo->image->src);
+        if (isset($model->seo?->image?->src)) SEOTools::addImages($model->seo->image->src);
     }
 }
