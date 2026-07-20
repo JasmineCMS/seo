@@ -15,8 +15,7 @@ trait Seoable
 {
     public function isSeoable() { return true; }
 
-    public static function seoableJasmineOnSaving(Model|BreadableInterface $m, array $data)
-    {
+    public static function seoableJasmineOnSaving(Model|BreadableInterface $m, array $data): array {
         $bag = collect($m instanceof JasminePage ? $m->content : $data)->only([
             'seo_title',
             'seo_description',
@@ -32,10 +31,11 @@ trait Seoable
             $m['seo_canonical'],
             $m['seo_image'],
         );
+
+        return $m->toArray();
     }
 
-    public static function seoableJasmineOnSaved(Model|BreadableInterface $m)
-    {
+    public static function seoableJasmineOnSaved(Model|BreadableInterface $m) {
         $bag = session($m::class . ':seo', []);
 
         /** @var JasmineSeo $seo */
@@ -55,8 +55,7 @@ trait Seoable
         ])->save();
     }
 
-    public static function seoableJasmineOnRetrievedForEdit(Model|BreadableInterface $m)
-    {
+    public static function seoableJasmineOnRetrievedForEdit(Model|BreadableInterface $m): array {
         $m->load('seo');
 
         if (method_exists($m, 'getLocale') && $m->seo) $m->seo->setLocale(request('_locale', app()->getLocale()));
@@ -73,6 +72,8 @@ trait Seoable
             foreach ($data as $k => $v) $content[$k] = $v;
             $m->content = $content;
         } else foreach ($data as $k => $v) $m->setAttribute($k, $v);
+
+        return $m->toArray();
     }
 
     public function seo() { return $this->morphOne(JasmineSeo::class, 'seoable'); }

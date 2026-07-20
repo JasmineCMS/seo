@@ -16,21 +16,13 @@ class JasmineSeo
     {
         return [
             __('SEO Properties') => [
-                (new InputField('seo_title'))
-                    ->setLabel(__('Title'))
-                    ->setValidation(['nullable', 'string']),
+                InputField::for('seo_title')->setLabel(__('Title'))->setValidation(['nullable', 'string']),
 
-                (new TextareaField('seo_description'))
-                    ->setLabel(__('Description'))
-                    ->setValidation(['nullable', 'string']),
+                TextareaField::for('seo_description')->setLabel(__('Description'))->setValidation(['nullable', 'string']),
 
-                (new InputField('seo_canonical'))
-                    ->setLabel(__('Canonical URL'))
-                    ->setValidation(['nullable', 'string', 'url']),
+                InputField::for('seo_canonical')->setLabel(__('Canonical URL'))->setValidation(['nullable', 'string', 'url']),
 
-                (new ImageField('seo_image'))
-                    ->setLabel(__('Image'))
-                    ->setOptions(['w' => 269, 'h' => 319]),
+                ImageField::for('seo_image')->setLabel(__('Image'))->setOptions(['w' => 269, 'h' => 319]),
             ],
         ];
     }
