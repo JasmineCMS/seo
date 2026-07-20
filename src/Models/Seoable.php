@@ -35,7 +35,7 @@ trait Seoable
         return $m->toArray();
     }
 
-    public static function seoableJasmineOnSaved(Model|BreadableInterface $m) {
+    public static function seoableJasmineOnSaved(Model|BreadableInterface $m, array $data) {
         $bag = session($m::class . ':seo', []);
 
         /** @var JasmineSeo $seo */
@@ -55,25 +55,25 @@ trait Seoable
         ])->save();
     }
 
-    public static function seoableJasmineOnRetrievedForEdit(Model|BreadableInterface $m): array {
+    public static function seoableJasmineOnRetrievedForEdit(Model|BreadableInterface $m, array $data): array
+    {
         $m->load('seo');
 
-        if (method_exists($m, 'getLocale') && $m->seo) $m->seo->setLocale(request('_locale', app()->getLocale()));
+        if (method_exists($m, 'getLocale') && $m->seo) {
+            $m->seo->setLocale(request('_locale', app()->getLocale()));
+        }
 
-        $data = [
+        $bag = [
             'seo_title'       => $m->seo?->title,
             'seo_description' => $m->seo?->description,
             'seo_canonical'   => $m->seo?->canonical,
             'seo_image'       => $m->seo?->image,
         ];
 
-        if ($m instanceof JasminePage) {
-            $content = $m->content;
-            foreach ($data as $k => $v) $content[$k] = $v;
-            $m->content = $content;
-        } else foreach ($data as $k => $v) $m->setAttribute($k, $v);
+        if ($m instanceof JasminePage) $data['content'] = [...($data['content'] ?? []), ...$bag];
+        else $data = [...$data, ...$bag];
 
-        return $m->toArray();
+        return $data;
     }
 
     public function seo() { return $this->morphOne(JasmineSeo::class, 'seoable'); }
