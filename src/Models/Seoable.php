@@ -32,7 +32,7 @@ trait Seoable
         return Arr::except($data, $keys);
     }
 
-    public static function seoableJasmineOnSaved(Model|BreadableInterface $m, array $data) {
+    public static function seoableJasmineOnSaved(Model|BreadableInterface $m) {
         $bag = session($m::class . ':seo', []);
 
         /** @var JasmineSeo $seo */
