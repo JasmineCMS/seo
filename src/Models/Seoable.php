@@ -3,6 +3,7 @@
 namespace Jasmine\Seo\Models;
 
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Support\Arr;
 use Illuminate\Support\Facades\Route;
 use Jasmine\Jasmine\Bread\BreadableInterface;
 use Jasmine\Jasmine\Bread\Translatable;
@@ -15,24 +16,20 @@ trait Seoable
 {
     public function isSeoable() { return true; }
 
-    public static function seoableJasmineOnSaving(Model|BreadableInterface $m, array $data): array {
-        $bag = collect($m instanceof JasminePage ? $m->content : $data)->only([
-            'seo_title',
-            'seo_description',
-            'seo_canonical',
-            'seo_image',
-        ])->toArray();
+    public static function seoableJasmineOnSaving(Model|BreadableInterface $m, array $data): array
+    {
+        $keys = ['seo_title', 'seo_description', 'seo_canonical', 'seo_image'];
 
-        session([$m::class . ':seo' => $bag]);
+        $source = $m instanceof JasminePage ? ($m->content ?? []) : $data;
+        session([$m::class . ':seo' => Arr::only($source, $keys)]);
 
-        unset(
-            $m['seo_title'],
-            $m['seo_description'],
-            $m['seo_canonical'],
-            $m['seo_image'],
-        );
+        if ($m instanceof JasminePage) {
+            $m->content = Arr::except($m->content ?? [], $keys);
+        } else {
+            foreach ($keys as $k) unset($m[$k]);
+        }
 
-        return $m->toArray();
+        return Arr::except($data, $keys);
     }
 
     public static function seoableJasmineOnSaved(Model|BreadableInterface $m, array $data) {
